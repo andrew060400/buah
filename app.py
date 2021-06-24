@@ -31,7 +31,7 @@ def preprocess(img):
 	return reshaped
 
 @app.route("/")
-def index():
+def home():
 	return(render_template("templates/index.html"))
 
 @app.route("/predict", methods=["POST"])
