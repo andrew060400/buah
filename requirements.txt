@@ -1,7 +1,6 @@
 Flask==1.1.2
 gunicorn
-libsm6 libxrender1 libfontconfig1
-opencv-contrib-python
+opencv-python==3.2.0.8
 Keras==2.3.0
 Pillow==8.2.0
 numpy==1.19.5
