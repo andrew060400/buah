@@ -1,6 +1,7 @@
 import keras
 from flask import Flask, render_template, request,jsonify
 import tensorflow as tf
+from keras.models import load_model
 import cv2
 import numpy as np
 import base64
@@ -12,7 +13,7 @@ img_size=100
 
 app = Flask(__name__)
 
-model= tf.keras.models.load_model('model-016.model')
+model= load_model('model-016.model')
 
 label_dict={1:'apel_baik', 2:'apel_busuk',3:'jeruk_baik',4:'jeruk_busuk',5:'pisang_baik',6:'pisang_busuk'}
 
