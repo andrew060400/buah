@@ -1,0 +1,153 @@
+<html>
+<head>
+<title>ANALISA BUAH BAIK DAN BUSUK</title>
+<meta charset="UTF-8" />
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+<!-- Scrollbar Custom CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.7/css/responsive.dataTables.min.css">
+
+<link rel="stylesheet" href="https://cdn.datatables.net/scroller/2.0.3/css/scroller.dataTables.min.css">
+
+<!-- jQuery CDN - Slim version (=without AJAX) -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<!-- Popper.JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+<!-- jQuery Custom Scroller CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.7/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/scroller/2.0.3/js/dataTables.scroller.min.js"></script>
+<!-- Font Awesome JS -->
+<script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+<script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.1.0/autoNumeric.js" integrity="sha512-w5udtBztYTK9p9QHQR8R1aq8ke+YVrYoGltOdw9aDt6HvtwqHOdUHluU67lZWv0SddTHReTydoq9Mn+X/bRBcQ==" crossorigin="anonymous"></script>
+</head>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+
+<header>
+	<title>PENDETEKSI BUAH BUSUK DAN BAIK</title>
+</header>
+<body style="height: 800px;">
+	<div class="row" style="margin-top:50px">
+	    <div class="col-md-4"></div>
+	    <div class="col-md-4 col-sm-12">
+	        <div class="container-fluid text-center">
+	            <h3>PENDETEKSI<br>BUAH<br>DENGAN FOTO</h3>
+	        </div>
+	        <br>
+	    </div>
+	    <div class="col-md-4"></div>
+	</div>
+	<div class="row">
+	<div class="col-md-4"></div>
+	<div class="col-md-4 col-sm-12">
+	    <div class="container-fluid">
+          <ul class="list-group">
+              <li class="list-group-item">
+                  <div class="form-group">
+                      <input id="image-selector" type="file">
+											<button id="predict-button">Predict</button>
+                  </div>
+									<div class="form-group">
+											<img id="selected-image" width="400" src=""/>
+                  </div>
+                  <div class="form-group">
+											<p>PREDICTION: <span id="result">...</span></p>
+											<p>PROBABILITY: <span id="probability">...</span></p>
+                  </div>
+                  <br>
+              </li>
+          </ul>
+	    </div>
+	</div>
+	<div class="col-md-4"></div>
+	</div>
+</body>
+<script>
+    let base64Image;
+    $("#image-selector").change(function() {
+        let reader = new FileReader();
+        reader.onload = function(e) {
+            let dataURL = reader.result;
+            $('#selected-image').attr("src", dataURL);
+            base64Image = dataURL.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
+            console.log(base64Image);
+        }
+        reader.readAsDataURL($("#image-selector")[0].files[0]);
+        $("#result").text("");
+        $("#probability").text("");
+
+    });
+
+    $("#predict-button").click(function(){
+            let message = {
+            image: base64Image
+        }
+        console.log(message);
+        $.post("http://127.0.0.1:5000/predict", JSON.stringify(message), function(response){
+            $("#result").text(response.prediction.result);
+            $("#probability").text(response.prediction.accuracy.toFixed(2));
+            console.log(response);
+        });
+    });
+
+</script>
+</html>
+
+
+<!--
+<html>
+	<head>
+		<title>PENDETEKSI BUAH BUSUK DAN BAIK</title>
+	</head>
+
+	<body>
+		<h1>PENDETEKSI BUAH DENGAN FILE FOTO</h1>
+		<input id="image-selector" type="file">
+		<button id="predict-button">Predict</button>
+		<p>PREDICTION: <span id="result">...</span></p>
+		<p>PROBABILITY: <span id="probability">...</span></p>
+		<img id="selected-image" width="400" src=""/>
+
+	</body>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<script>
+    let base64Image;
+    $("#image-selector").change(function() {
+        let reader = new FileReader();
+        reader.onload = function(e) {
+            let dataURL = reader.result;
+            $('#selected-image').attr("src", dataURL);
+            base64Image = dataURL.replace(/^data:image\/(png|jpg|jpeg);base64,/, "");
+            console.log(base64Image);
+        }
+        reader.readAsDataURL($("#image-selector")[0].files[0]);
+        $("#result").text("");
+        $("#probability").text("");
+
+    });
+
+    $("#predict-button").click(function(){
+            let message = {
+            image: base64Image
+        }
+        console.log(message);
+        $.post("http://127.0.0.1:5000/predict", JSON.stringify(message), function(response){
+            $("#result").text(response.prediction.result);
+            $("#probability").text(response.prediction.accuracy.toFixed(2));
+            console.log(response);
+        });
+    });
+
+</script>
+
+</html>-->
