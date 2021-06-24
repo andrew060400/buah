@@ -1,5 +1,4 @@
-opencv-python
-libgl1-mesa-glx
+opencv-python-headless==4.2.0.32
 Flask==1.1.2
 gunicorn
 Keras==2.3.0
