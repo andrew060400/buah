@@ -1,4 +1,3 @@
-Python==3.7.10
 Flask==1.1.2
 Keras==2.4.3
 Pillow==8.2.0
