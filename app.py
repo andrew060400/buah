@@ -12,7 +12,7 @@ img_size=100
 
 app = Flask(__name__)
 
-model=load_model('model-016.model')
+model=load_model('model-016.h5')
 
 label_dict={1:'apel_baik', 2:'apel_busuk',3:'jeruk_baik',4:'jeruk_busuk',5:'pisang_baik',6:'pisang_busuk'}
 
