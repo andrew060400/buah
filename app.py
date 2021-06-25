@@ -26,7 +26,7 @@ def preprocess(img):
 		gray=img
 	gray=gray/255
 	resized=cv2.resize(gray,(img_size,img_size))
-	reshaped=resized.reshape(1,1,img_size,img_size)
+	reshaped=resized.reshape(1,img_size,img_size,1)
 	return reshaped
 
 @app.route("/")
